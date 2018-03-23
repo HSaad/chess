@@ -4,6 +4,8 @@ class Game
 		@board = Board.new()
 		@player1 = Player.new("white")
 		@board_array = @board.board_array
+
+		@player1.add_pieces(@board_array)
 	end
 
 	def start 
@@ -42,13 +44,14 @@ class Game
 		opponent = gets.chomp
 		if opponent == "1" || opponent.downcase == "human"
 			@player2 = Player.new("black")
-			@current_player = @player2
 		elsif opponent == "2" || opponent.downcase == "computer"
 			@player2 = Computer.new("black")
-			@current_player = @player2
 		else
 			choose_opponents()
 		end
+
+		@current_player = @player2
+		@player2.add_pieces(@board_array)
 	end
 
 	def switch_players
@@ -310,6 +313,17 @@ class Player
 
 	def add_pieces(board)
 		#add pieces to array depending on color
+		if color == "white"
+			7.times do |index|
+				@pieces.push(board[0][index])
+				@pieces.push(board[1][index])
+			end
+		else
+			7.times do |index|
+				@pieces.push(board[6][index])
+				@pieces.push(board[7][index])
+			end
+		end
 	end
 
 	def move(board_array)
