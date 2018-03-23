@@ -16,7 +16,12 @@ class Game
 		#while !(game_over?)
 		switch_players()
 		#@current_player.move(@board_array)
+		#last_move = @current_player.player_moves.last
+		#@board_array[last_move[1]][last_move[0]] = @current_player.mark
+		#@board.draw(@board_array)
 		#end
+
+		#restart if play_again?
 	end
 
 	def print_instructions
@@ -130,23 +135,42 @@ class Board
 										[" ", " ", " ", " ", " ", " ", " ", " "],
 										[" ", " ", " ", " ", " ", " ", " ", " "]]
 		add_white_pieces
+		add_black_pieces
 	end
 
 	def add_white_pieces
-		@board_array[0][0] = Rook.new("white")
-		@board_array[0][7] = Rook.new("white")
+		@board_array[0][0] = Rook.new("white", [0,0])
+		@board_array[0][7] = Rook.new("white", [0,7])
 
-		@board_array[0][1] = Knight.new("white")
-		@board_array[0][6] = Knight.new("white")
+		@board_array[0][1] = Knight.new("white",[0,1])
+		@board_array[0][6] = Knight.new("white", [0,6])
 
-		@board_array[0][2] = Bishop.new("white")
-		@board_array[0][5] = Bishop.new("white")		
+		@board_array[0][2] = Bishop.new("white", [0,2])
+		@board_array[0][5] = Bishop.new("white", [0,5])		
 
-		@board_array[0][3] = Queen.new("white")
-		@board_array[0][4] = King.new("white")
+		@board_array[0][3] = Queen.new("white", [0,3])
+		@board_array[0][4] = King.new("white", [0,4])
 
 		@board_array[1].each_with_index do |pawn,index|
-			@board_array[1][index] = Pawn.new("white")
+			@board_array[1][index] = Pawn.new("white", [1,index])
+		end
+	end
+
+	def add_black_pieces
+		@board_array[7][0] = Rook.new("black", [7,0])
+		@board_array[7][7] = Rook.new("black", [7,7])
+
+		@board_array[7][1] = Knight.new("black", [7,1])
+		@board_array[7][6] = Knight.new("black", [7,6])
+
+		@board_array[7][2] = Bishop.new("black", [7,2])
+		@board_array[7][5] = Bishop.new("black", [7,5])		
+
+		@board_array[7][3] = Queen.new("black", [7,3])
+		@board_array[7][4] = King.new("black", [7,4])
+
+		@board_array[6].each_with_index do |pawn,index|
+			@board_array[6][index] = Pawn.new("black", [6,index])
 		end
 	end
 
@@ -179,14 +203,21 @@ class Board
 end
 
 class ChessPiece
-	attr_accessor :color
+	attr_accessor :color, :position
 
-	def initialize(color)
+	def initialize(color, position)
 		@color = color
+		@position = position
 	end
 end
 
 class King < ChessPiece
+	def possible_moves(position)
+		array_positons = []
+				
+		return array_positons
+	end
+
 	def to_s
 		return "\u2654" if @color == "white"
 		return "\u265A"
@@ -194,6 +225,13 @@ class King < ChessPiece
 end
 
 class Queen < ChessPiece
+
+	def possible_moves(position)
+		array_positons = []
+				
+		return array_positons
+	end
+
 	def to_s
 		return "\u2655" if @color == "white"
 		return "\u265B"
@@ -201,6 +239,12 @@ class Queen < ChessPiece
 end
 
 class Rook < ChessPiece
+	def possible_moves(position)
+		array_positons = []
+				
+		return array_positons
+	end
+
 	def to_s
 		return "\u2656" if @color == "white"
 		return "\u265C"
@@ -208,13 +252,47 @@ class Rook < ChessPiece
 end
 
 class Bishop < ChessPiece
+	def possible_moves(position)
+		array_positons = []
+				
+		return array_positons
+	end
+
+	def to_s
+		return "\u2657" if @color == "white"
+		return "\u265D"
+	end
 end
 
 class Knight < ChessPiece
 
+	def possible_moves(position)
+		array_positons = []
+		array_positons.push([position[0] + 2, position[1] + 1]) if position[0] + 2 < 8 && position[1] + 1 < 8
+		array_positons.push([position[0] + 1, position[1] + 2]) if position[0] + 1 < 8 && position[1] + 2 < 8
+		array_positons.push([position[0] - 2, position[1] - 1]) if position[0] - 2 >= 0 && position[1] - 1 >= 0
+		array_positons.push([position[0] - 1, position[1] - 2]) if position[0] - 1 >= 0 && position[1] - 2 >= 0
+		array_positons.push([position[0] + 2, position[1] - 1]) if position[0] + 2 < 8 && position[1] - 1 >= 0
+		array_positons.push([position[0] - 2, position[1] + 1]) if position[0] - 2 >= 0 && position[1] + 1 < 8
+		array_positons.push([position[0] + 1, position[1] - 2]) if position[0] + 1 < 8 && position[1] - 2 >= 0
+		array_positons.push([position[0] - 1, position[1] + 2]) if position[0] - 1 >= 0 && position[1] + 2 < 8
+		return array_positons
+	end
+
+	def to_s
+		return "\u2658" if @color == "white"
+		return "\u265E"
+	end
 end 
 
 class Pawn < ChessPiece
+
+	def possible_moves(position)
+		array_positons = []
+
+		return array_positons
+	end
+
 	def to_s
 		return "\u2659" if @color == "white"
 		return "\u265F"
@@ -228,12 +306,10 @@ class Player
 		@color = color
 		@pieces = []
 		@player_moves = []
-
-		add_pieces
 	end
 
-	def add_pieces
-
+	def add_pieces(board)
+		#add pieces to array depending on color
 	end
 
 	def move(board_array)
