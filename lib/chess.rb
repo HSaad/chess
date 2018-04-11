@@ -17,7 +17,7 @@ class Game
 
 		#while !(game_over?)
 		switch_players()
-		#@current_player.move(@board_array)
+		@current_player.ask_piece(@board_array)
 		#last_move = @current_player.player_moves.last
 		#@board_array[last_move[1]][last_move[0]] = @current_player.mark
 		#@board.draw(@board_array)
@@ -215,7 +215,8 @@ class ChessPiece
 end
 
 class King < ChessPiece
-	def possible_moves(position)
+
+	def possible_moves(position=@position)
 		array_positons = []
 				
 		return array_positons
@@ -229,7 +230,7 @@ end
 
 class Queen < ChessPiece
 
-	def possible_moves(position)
+	def possible_moves(position=@position)
 		array_positons = []
 				
 		return array_positons
@@ -242,7 +243,7 @@ class Queen < ChessPiece
 end
 
 class Rook < ChessPiece
-	def possible_moves(position)
+	def possible_moves(position=@position)
 		array_positons = []
 				
 		return array_positons
@@ -255,7 +256,7 @@ class Rook < ChessPiece
 end
 
 class Bishop < ChessPiece
-	def possible_moves(position)
+	def possible_moves(position=@position)
 		array_positons = []
 				
 		return array_positons
@@ -269,7 +270,7 @@ end
 
 class Knight < ChessPiece
 
-	def possible_moves(position)
+	def possible_moves(position=@position)
 		array_positons = []
 		array_positons.push([position[0] + 2, position[1] + 1]) if position[0] + 2 < 8 && position[1] + 1 < 8
 		array_positons.push([position[0] + 1, position[1] + 2]) if position[0] + 1 < 8 && position[1] + 2 < 8
@@ -290,7 +291,7 @@ end
 
 class Pawn < ChessPiece
 
-	def possible_moves(position)
+	def possible_moves(position=@position)
 		array_positons = []
 
 		return array_positons
@@ -326,8 +327,55 @@ class Player
 		end
 	end
 
-	def move(board_array)
+	def ask_piece(board_array)
+		puts "Make your move: "
+		puts "Pick a chess piece to move "
+		puts "Column (a-h): "
+		col = gets.chomp
+		puts "Row (1-8): "
+		row = gets.chomp
 
+		if valid_piece?(col, row ,board_array)
+			puts "Valid Piece"
+			move(board_array)
+		else
+			ask_piece(board_array)
+		end
+
+	end
+
+	def move(board_array)
+		puts "Move (column, row): "
+		move = gets.chomp
+
+		if valid_move(move, board_array)
+			puts "Your Move: #{move}"
+			return true
+		else 
+			return false
+		end
+	end
+
+	def valid_piece?(col, row ,board_array)
+		column = col.strip.downcase
+		row_num = row.to_i - 1
+		column_num = ["a", "b", "c", "d", "e", "f", "g", "h"].index(column)
+		if column.size != 1 || !(column.between?("a","h")) #col is not from a - h
+			return false
+		elsif row_num > 8 || row_num < 0
+			return false
+		elsif board_array[row_num][column_num] != " "
+			piece = board_array[row_num][column_num]
+			#check that the piece there matches the correct players
+			if @color == piece.color
+				puts piece.to_s
+				return true
+			else 
+				return false
+			end
+		else 
+			return false
+		end
 	end
 
 	def valid_move?(move, board_array)
