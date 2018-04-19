@@ -352,6 +352,7 @@ class Player
 			puts "Your Move: #{move}"
 			return true
 		else 
+			move(board_array)
 			return false
 		end
 	end
