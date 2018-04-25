@@ -368,6 +368,7 @@ class Player
 		elsif board_array[row_num][column_num] != " "
 			piece = board_array[row_num][column_num]
 			#check that the piece there matches the correct players
+			#chess the piece has possible moves
 			if @color == piece.color
 				puts piece.to_s
 				return true
